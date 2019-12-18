@@ -12,7 +12,7 @@ from digits.loss import *
 from digits.single_test import single_test
 
 
-# writer = SummaryWriter()  # 使用TensorboardX
+# writer = SummaryWriter()  
 
 def one_hot(ten):
     len = ten.size(0)
