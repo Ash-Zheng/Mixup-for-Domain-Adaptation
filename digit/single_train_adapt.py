@@ -9,7 +9,7 @@ from tensorboardX import SummaryWriter
 from digits.loss import *
 from digits.single_test import single_test
 
-# writer = SummaryWriter()  # 使用TensorboardX
+# writer = SummaryWriter()  
 
 
 def one_hot(ten):
@@ -36,7 +36,7 @@ def single_train_adapt(train_s_loader, train_t_loader, extractor, classifier, em
     # print('Epoch: %d, Accuracy: %f, Best Accuracy: %f' % (epoch + 1, acc))
 
     best_acc = 0.0
-    extractor.train()  # 设置training标志位
+    extractor.train()  # 设置train
     classifier.train()
 
     train_s_iter = iter(train_s_loader)
