@@ -29,33 +29,33 @@ parser.add_argument('--log_interval', type= int, default= 100)
 parser.add_argument('--net', type= str, default= 'mnist')
 
 args = parser.parse_args()
-root = args.data_root  # 数据集根目录 ./data
-seed = args.seed  # 随机数种子 1
-snapshot = args.snapshot  # ？？
-gpu_id = args.gpu_id  # GPUid 0
+root = args.data_root  
+seed = args.seed  
+snapshot = args.snapshot 
+gpu_id = args.gpu_id  
 source = args.source  # 源域 MNIST
 target = args.target  # 目标域 MNIST_M
-batchsize = args.batchsize  # 批大小 64
-epochs = args.epochs  # 循环次数 100
-num_classes = args.num_classes  # label种类数 10
-pretrain = args.pretrain  # 预训练模型
-net = args.net  # 模型名 mnist
+batchsize = args.batchsize  
+epochs = args.epochs  
+num_classes = args.num_classes  
+pretrain = args.pretrain  
+net = args.net  
 
-if not os.path.exists(snapshot):  # ?
+if not os.path.exists(snapshot):  
     os.makedirs(snapshot)
 
-torch.manual_seed(seed)  # 设置随机数种子，使得随机的结果一致
+torch.manual_seed(seed)  # 设置随机数种子
 
 use_gpu = torch.cuda.is_available()  # 检测是否可用GPU
-device = torch.device('cuda:' + str(gpu_id) if use_gpu else 'cpu')  # 使用0号gpu
+device = torch.device('cuda:' + str(gpu_id) if use_gpu else 'cpu')  
 
 train_transform_mapping = {'mnist': transforms.Compose([  # 训练集transform
     transforms.ToTensor(),
-    transforms.Normalize(mean= (0.1307,), std= (0.3081,))]),  # 单通道正则化
+    transforms.Normalize(mean= (0.1307,), std= (0.3081,))]), 
 'mnistm': transforms.Compose([
     transforms.RandomCrop(28),  # 随机裁剪
     transforms.ToTensor(),
-    transforms.Normalize(mean= (0.5, 0.5, 0.5), std= (0.5, 0.5, 0.5))]),  # 3通道正则化
+    transforms.Normalize(mean= (0.5, 0.5, 0.5), std= (0.5, 0.5, 0.5))]),  
 }
 
 val_transform_mapping = {'mnist': transforms.Compose([  # 测试集transform
@@ -67,7 +67,7 @@ val_transform_mapping = {'mnist': transforms.Compose([  # 测试集transform
     transforms.Normalize(mean= (0.5, 0.5, 0.5), std= (0.5, 0.5, 0.5))]),
 }
 
-# root为.data/ mnist数据集位置不对
+
 train_datasets_mapping = {'mnist': datasets.MNIST(root= root, transform= train_transform_mapping['mnist']),
                     'mnistm': datasets.ImageFolder(root= root + 'MNIST_M/train/', transform= train_transform_mapping['mnistm'])}
 
@@ -87,14 +87,14 @@ val_loader = val_dataloader_mapping[target]  # 测试集loader
 extractor_mapping = {'mnist': MNIST_Extractor}
 classifier_mapping = {'mnist': MNIST_Classfier}
 
-extractor = extractor_mapping[net]().to(device)  # 卷积网络-特征提取器
+extractor = extractor_mapping[net]().to(device)  
 ema_extractor = extractor_mapping[net]().to(device)
-classifier = classifier_mapping[net]().to(device)  # BP网络-分类器
+classifier = classifier_mapping[net]().to(device)  
 ema_classifier = classifier_mapping[net]().to(device)
 
 # ###################
 for param in ema_extractor.parameters():
-    param.detach_()  # 参数分离，成为叶结点
+    param.detach_()  
 for param in ema_classifier.parameters():
     param.detach_()
 
